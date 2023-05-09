@@ -11,13 +11,15 @@ env.config()
 app.use(cors())
 app.use(bodyParser.json())
 
-// Cpnfigure open api
-const configuration = new Configuration({
-    organization:"org-iIdtDhwlQH21D07UTYuGkKeN",
-    apiKey: process.env.API_KEY
-}) 
 
+
+// Configure open api
+const configuration = new Configuration({
+    organization: "org-iIdtDhwlQH21D07UTYuGkKeN",
+    apiKey: "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" // VISIT .env AND MAKE CHANGES
+})
 const openai = new OpenAIApi(configuration)
+
 
 
 // listeninng
@@ -30,22 +32,21 @@ app.get("/", (req, res) => {
 })
 
 
-//post route  for making requests
-app.post('/', async (req,res) => {
- const {message} = req.body
+//post route for making requests
+app.post('/', async (req, res) => {
+    const { message } = req.body
 
- try{
-    const response = await openai.createCompletion({
-        model:"text-davinci-003",
-        prompt:`${message}`,
-        max_tokens : 100,
-        temperature:0.5
-    })
-    
- }catch(ex){
-    console.log(ex)
-    res.send(ex).status(400)
- }
+    try {
+        const response = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: `${message}`,
+            max_tokens: 100,
+            temperature: .5
+        })
+        res.json({ message: response.data.choices[0].text })
 
-
+    } catch (e) {
+        console.log(e)
+        res.send(e).status(400)
+    }
 })
